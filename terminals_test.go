@@ -6,10 +6,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"golang.org/x/exp/constraints"
 )
 
-func add[T constraints.Integer](a, b T) T {
+func add[T integer](a, b T) T {
 	return a + b
 }
 
@@ -18,7 +17,7 @@ func isZero[T comparable](input T) bool {
 	return input == zero
 }
 
-func increment[T constraints.Integer](a T) T {
+func increment[T integer](a T) T {
 	return a + 1
 }
 
