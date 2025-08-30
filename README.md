@@ -102,11 +102,7 @@ results: [3 5 2 1 3]
 
 1. Generates an infinite sequence composed by `1`, `double(1)`, `double(double(1))`, etc...
    and cut it to 6 elements.
-2. Maps the numbers' sequence to a strings' sequence. Because, at the moment,
-   [go does not allow type parameters in methods](https://github.com/golang/go/issues/49085),
-   we need to invoke the `sequence.Map` function instead of the `numbers.Map` method
-   because the contained type of the output sequence (`string`) is different than the type of
-   the input sequence (`int`).
+2. Maps the numbers' sequence to a strings' sequence.
 3. Converts the words sequence to a slice and prints it.
 
 
