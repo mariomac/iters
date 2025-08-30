@@ -158,10 +158,10 @@ Output:
 Deduplicated words: [hello ! ho]
 ```
 
-### Example 5: Reduce and helper functions
+### Example 5: Reduce
 
 1. Generate an incremental sequence from 1 to 8, both included.
-2. Reduce all the elements multiplying them using the item.Multiply helper function
+2. Reduce all the elements multiplying them
 
 ```go
 // create a sequence in range [1, 8]
