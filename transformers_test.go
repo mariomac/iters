@@ -96,7 +96,7 @@ func TestPeek(t *testing.T) {
 	in = Peek(in, func(n int) {
 		actions = append(actions, fmt.Sprint("processed ", n))
 	})
-	// until we don't aggregate the stream, Peek is not invoked due to lazyness
+	// until we don't aggregate the sequence, Peek is not invoked due to lazyness
 	assert.Empty(t, actions)
 
 	require.Equal(t, []int{1, 3, 5}, slices.Collect(in))

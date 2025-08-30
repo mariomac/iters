@@ -2,16 +2,17 @@ package main
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/mariomac/iters"
 )
 
 func main_iterate() {
-	numbers := iters.Iterate(1, double).Limit(6)
+	numbers := iters.Iterate(1, double)
+	sixNums := iters.Limit(6, numbers)
+	words := iters.Map(sixNums, asWord)
 
-	words := iters.Map(numbers, asWord).ToSlice()
-
-	fmt.Println(words)
+	fmt.Println(slices.Collect(words))
 }
 
 func double(n int) int {

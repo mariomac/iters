@@ -18,9 +18,7 @@ func main() {
 		main_dice,
 		main_iterate,
 		main_reduce,
-		main_sort,
 		main_seq_api,
-		main_seq2_api,
 	}
 
 	for _, f := range funcs {

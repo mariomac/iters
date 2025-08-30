@@ -1,10 +1,6 @@
 # github.com/davecgh/go-spew v1.1.1
 ## explicit
 github.com/davecgh/go-spew/spew
-# github.com/mariomac/gostream v0.10.1
-## explicit; go 1.24
-github.com/mariomac/gostream/item
-github.com/mariomac/gostream/order
 # github.com/pmezard/go-difflib v1.0.0
 ## explicit
 github.com/pmezard/go-difflib/difflib
