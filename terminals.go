@@ -3,8 +3,6 @@ package iters
 import (
 	"cmp"
 	"iter"
-
-	"github.com/mariomac/gostream/order"
 )
 
 // ForEach invokes the consumer function for each item of the iter.Seq.
@@ -107,7 +105,7 @@ func Max[T cmp.Ordered](input iter.Seq[T]) (T, bool) {
 // MaxFunc returns the maximum element of the iter.Seq according to the provided Comparator,
 // along with true if the iter.Seq is not empty. If the iter.Seq is empty, returns the zero
 // value along with false.
-func MaxFunc[T any](input iter.Seq[T], cmp order.Comparator[T]) (T, bool) {
+func MaxFunc[T any](input iter.Seq[T], cmp func(a, b T) int) (T, bool) {
 	it, _ := iter.Pull(input)
 	max, ok := it()
 	if !ok {
@@ -141,7 +139,7 @@ func Min[T cmp.Ordered](input iter.Seq[T]) (T, bool) {
 // MinFunc returns the minimum element of the iter.Seq according to the provided Comparator,
 // along with true if the iter.Seq is not empty. If the iter.Seq is empty, returns the zero
 // value along with false.
-func MinFunc[T any](input iter.Seq[T], cmp order.Comparator[T]) (T, bool) {
+func MinFunc[T any](input iter.Seq[T], cmp func(a, b T) int) (T, bool) {
 	next, _ := iter.Pull(input)
 	min, ok := next()
 	if !ok {
