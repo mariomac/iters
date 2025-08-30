@@ -15,7 +15,7 @@ import (
 // This creates a lazy sequence. The supplier won't be called until it is requested for consumption by
 // the transformation or aggregation functions.
 //
-// Caution! Unless you limit the lenght of the iter.Seq (e.g. using the Limit function), the aggregation
+// Caution! Unless you limit the length of the iter.Seq (e.g. using the Limit function), the aggregation
 // functions over this iter.Seq might not terminate.
 func Generate[T any](supplier func() T) iter.Seq[T] {
 	return func(yield func(T) bool) {

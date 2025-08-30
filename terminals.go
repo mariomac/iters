@@ -12,13 +12,6 @@ func ForEach[T any](input iter.Seq[T], consumer func(T)) {
 	}
 }
 
-// ForEach2 invokes the consumer function for each pair of items of the iter.Seq2
-func ForEach2[T1, T2 any](input iter.Seq2[T1, T2], consumer func(T1, T2)) {
-	for v1, v2 := range input {
-		consumer(v1, v2)
-	}
-}
-
 // Reduce performs a reduction on the elements of the input Seq, using an associative
 // accumulation function, and returns a value describing the reduced value, if any.
 // If no reduced value (e.g. because the iter.Seq is empty), the second returned value

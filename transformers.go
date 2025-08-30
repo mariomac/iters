@@ -47,23 +47,6 @@ func Limit[T any](maxSize int, input iter.Seq[T]) iter.Seq[T] {
 	}
 }
 
-// Limit2 returns an iter.Seq2 consisting of the elements of the input iter.Seq2, truncated to
-// be no longer than maxSize in length.
-func Limit2[K, V any](maxSize int, input iter.Seq2[K, V]) iter.Seq2[K, V] {
-	return func(yield func(K, V) bool) {
-		count := 0
-		for k, v := range input {
-			if count == maxSize {
-				return
-			}
-			if !yield(k, v) {
-				return
-			}
-			count++
-		}
-	}
-}
-
 // Distinct returns an iter.Seq consisting of the distinct elements (according to equality operator)
 // of the input iter.Seq.
 // This function needs to internally store the previous distinct elements in memory, so it might
@@ -104,7 +87,7 @@ func FlatMap[IN, OUT any](input iter.Seq[IN], mapper func(IN) iter.Seq[OUT]) ite
 	}
 }
 
-// Peek peturns an iter.Seq consisting of the elements of the input iter.Seq, additionally performing
+// Peek returns an iter.Seq consisting of the elements of the input iter.Seq, additionally performing
 // the provided action on each element as elements are consumed from the resulting iter.Seq.
 func Peek[T any](input iter.Seq[T], consumer func(T)) iter.Seq[T] {
 	return func(yield func(T) bool) {
@@ -129,24 +112,6 @@ func Skip[T any](n int, input iter.Seq[T]) iter.Seq[T] {
 		}
 		for it, ok := next(); ok; it, ok = next() {
 			if !yield(it) {
-				return
-			}
-		}
-	}
-}
-
-// Skip2 returns an iter.Seq consisting of the remaining elements of the input iter.Seq2 after discarding
-// the first n elements of the sequence.
-func Skip2[K, V any](n int, input iter.Seq2[K, V]) iter.Seq2[K, V] {
-	return func(yield func(K, V) bool) {
-		next, stop := iter.Pull2(input)
-		defer stop()
-		skipped := 0
-		for _, _, ok := next(); ok && skipped < n-1; _, _, ok = next() {
-			skipped++
-		}
-		for k, v, ok := next(); ok; k, v, ok = next() {
-			if !yield(k, v) {
 				return
 			}
 		}
