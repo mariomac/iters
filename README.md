@@ -10,11 +10,9 @@ the [Java Streams API](https://docs.oracle.com/javase/8/docs/api/java/util/seque
 
 ## Table of contents
 
+* [Table of contents](#table-of-contents)
 * [Requirements](#requirements)
 * [Usage examples](#usage-examples)
-* [Limitations](#limitations)
-* [Performance](#performance)
-* [Completion status](#completion-status)
 * [Extra credits](#extra-credits)
 
 ## Requirements
