@@ -24,7 +24,8 @@ func ForEach2[T1, T2 any](input iter.Seq2[T1, T2], consumer func(T1, T2)) {
 // If no reduced value (e.g. because the iter.Seq is empty), the second returned value
 // is false.
 func Reduce[T any](input iter.Seq[T], accumulator func(a, b T) T) (T, bool) {
-	pull, _ := iter.Pull(input)
+	pull, stop := iter.Pull(input)
+	defer stop()
 	accum, ok := pull()
 	if !ok {
 		return accum, false
@@ -89,7 +90,8 @@ func FindFirst[T any](input iter.Seq[T]) (T, bool) {
 // along with true if the iter.Seq is not empty. If the iter.Seq is empty, returns the zero
 // value along with false.
 func Max[T cmp.Ordered](input iter.Seq[T]) (T, bool) {
-	it, _ := iter.Pull(input)
+	it, stop := iter.Pull(input)
+	defer stop()
 	max, ok := it()
 	if !ok {
 		return max, false
@@ -106,7 +108,8 @@ func Max[T cmp.Ordered](input iter.Seq[T]) (T, bool) {
 // along with true if the iter.Seq is not empty. If the iter.Seq is empty, returns the zero
 // value along with false.
 func MaxFunc[T any](input iter.Seq[T], cmp func(a, b T) int) (T, bool) {
-	it, _ := iter.Pull(input)
+	it, stop := iter.Pull(input)
+	defer stop()
 	max, ok := it()
 	if !ok {
 		return max, false
@@ -123,7 +126,8 @@ func MaxFunc[T any](input iter.Seq[T], cmp func(a, b T) int) (T, bool) {
 // along with true if the iter.Seq is not empty. If the iter.Seq is empty, returns the zero
 // value along with false.
 func Min[T cmp.Ordered](input iter.Seq[T]) (T, bool) {
-	next, _ := iter.Pull(input)
+	next, stop := iter.Pull(input)
+	defer stop()
 	min, ok := next()
 	if !ok {
 		return min, false
@@ -140,7 +144,8 @@ func Min[T cmp.Ordered](input iter.Seq[T]) (T, bool) {
 // along with true if the iter.Seq is not empty. If the iter.Seq is empty, returns the zero
 // value along with false.
 func MinFunc[T any](input iter.Seq[T], cmp func(a, b T) int) (T, bool) {
-	next, _ := iter.Pull(input)
+	next, stop := iter.Pull(input)
+	defer stop()
 	min, ok := next()
 	if !ok {
 		return min, false

@@ -137,3 +137,27 @@ func OfMapKeys[T comparable, K any](m map[T]K) iter.Seq[T] {
 func OfMapValues[T comparable, V any](m map[T]V) iter.Seq[V] {
 	return maps.Values(m)
 }
+
+// Zip joins the input iter.Seq[K] and iter.Seq[V] into an iter.Seq2[K, V].
+// The resulting iter.Seq2 will have the same length as the shorter of the two input iter.Seq.
+func Zip[K, V any](keys iter.Seq[K], vals iter.Seq[V]) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		keyNext, keyStop := iter.Pull(keys)
+		defer keyStop()
+		valNext, valStop := iter.Pull(vals)
+		defer valStop()
+
+		for {
+			k, kOk := keyNext()
+			v, vOk := valNext()
+
+			if !kOk || !vOk {
+				return
+			}
+
+			if !yield(k, v) {
+				return
+			}
+		}
+	}
+}

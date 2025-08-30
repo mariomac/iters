@@ -117,3 +117,33 @@ func TestOfRange(t *testing.T) {
 	result2 := slices.Collect(OfRange(10, 13))
 	assert.Equal(t, []int{10, 11, 12}, result2)
 }
+
+func TestZip(t *testing.T) {
+	keys := Of("a", "b", "c", "d")
+	values := Of(1, 2, 3)
+
+	assert.Equal(t,
+		map[string]int{"a": 1, "b": 2, "c": 3},
+		maps.Collect(Zip(keys, values)))
+
+	// Test equal length sequences
+	keys2 := Of("x", "y", "z")
+	values2 := Of(10, 20, 30)
+
+	assert.Equal(t,
+		map[string]int{"x": 10, "y": 20, "z": 30},
+		maps.Collect(Zip(keys2, values2)))
+}
+
+func TestZipInfinites_Skip2_Limit2(t *testing.T) {
+	seq2 := Zip(
+		Iterate(1, func(n int) int { return n + 1 }),
+		Iterate(1, func(n int) int { return n * 2 }))
+
+	tail := Skip2(3, seq2)
+	body := Limit2(3, tail)
+
+	assert.Equal(t,
+		map[int]int{4: 8, 5: 16, 6: 32},
+		maps.Collect(body))
+}
