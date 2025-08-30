@@ -90,9 +90,9 @@ func Of[T any](a ...T) iter.Seq[T] {
 
 // OfRange returns an iter.Seq that iterates the integer numbers from
 // the first argument (inclusive) to the second argument (exclusive).
-func OfRange[T constraints.Integer](startIncl, endNotIncl T) iter.Seq[T] {
+func OfRange[T constraints.Integer](start, excludedEnd T) iter.Seq[T] {
 	return func(yield func(T) bool) {
-		for i := startIncl; i < endNotIncl; i++ {
+		for i := start; i < excludedEnd; i++ {
 			if !yield(i) {
 				return
 			}
@@ -100,6 +100,10 @@ func OfRange[T constraints.Integer](startIncl, endNotIncl T) iter.Seq[T] {
 	}
 }
 
+// OfChannel returns an iter.Seq that iterates over all values received from the provided channel.
+// The iteration continues until the channel is closed.
+// This means that aggregations over the returned iter.Seq might not terminate if the channel
+// is inactive or never closed.
 func OfChannel[T any](ch <-chan T) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		for i := range ch {
@@ -110,18 +114,26 @@ func OfChannel[T any](ch <-chan T) iter.Seq[T] {
 	}
 }
 
+// OfSlice returns an iter.Seq that iterates over all elements of the provided slice.
+// It is just an alias for slices.Values.
 func OfSlice[T any](sl []T) iter.Seq[T] {
 	return slices.Values(sl)
 }
 
+// OfMap returns an iter.Seq2 that iterates over all key-value pairs of the provided map.
+// It is just an alias for maps.All.
 func OfMap[K comparable, V any](m map[K]V) iter.Seq2[K, V] {
 	return maps.All(m)
 }
 
+// OfMapKeys returns an iter.Seq that iterates over all keys of the provided map.
+// It is just an alias for maps.Keys.
 func OfMapKeys[T comparable, K any](m map[T]K) iter.Seq[T] {
 	return maps.Keys(m)
 }
 
+// OfMapValues returns an iter.Seq that iterates over all values of the provided map.
+// It is just an alias for maps.Values.
 func OfMapValues[T comparable, V any](m map[T]V) iter.Seq[V] {
 	return maps.Values(m)
 }

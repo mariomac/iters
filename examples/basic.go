@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"slices"
 
 	"github.com/mariomac/iters"
 )
@@ -17,7 +16,7 @@ func isPrime(n int) bool {
 }
 
 func main_basic() {
-	numbers := slices.Values([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11})
+	numbers := iters.OfRange(1, 12)
 
 	for n := range iters.Filter(numbers, isPrime) {
 		fmt.Printf("%d is a prime number\n", n)

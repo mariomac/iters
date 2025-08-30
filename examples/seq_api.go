@@ -26,7 +26,7 @@ func main_seq_api() {
 	// Put osFiles slice into a sequence and filter it
 	// This operation doesn't involve any slice copy
 	justFiles := iters.Filter(
-		slices.Values(osFiles),
+		iters.OfSlice(osFiles),
 		func(entry os.DirEntry) bool {
 			return !entry.IsDir()
 		})

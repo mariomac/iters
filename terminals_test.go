@@ -2,7 +2,6 @@ package iters
 
 import (
 	"cmp"
-	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -31,63 +30,63 @@ func not[T any](condition func(i T) bool) func(i T) bool {
 
 func TestReduce(t *testing.T) {
 	// test empty iter.Seq
-	_, ok := Reduce(slices.Values([]int{}), add[int])
+	_, ok := Reduce(Empty[int](), add[int])
 	assert.False(t, ok)
 
 	// test one-element iter.Seq
-	red, ok := Reduce(slices.Values([]int{8}), add[int])
+	red, ok := Reduce(Of(8), add[int])
 	assert.True(t, ok)
 	assert.Equal(t, 8, red)
 
 	// test multi-element iter.Seq
-	red, ok = Reduce(slices.Values([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), add[int])
+	red, ok = Reduce(Of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), add[int])
 	assert.True(t, ok)
 	assert.Equal(t, 55, red)
 }
 
 func TestIterableStream_AllMatch(t *testing.T) {
 	// for empty iter.Seq, following Java behavior as reference
-	assert.True(t, AllMatch(slices.Values([]string{}), isZero[string]))
-	assert.True(t, AllMatch(slices.Values([]string{"hello", "world"}), not(isZero[string])))
-	assert.False(t, AllMatch(slices.Values([]string{"", "world"}), not(isZero[string])))
+	assert.True(t, AllMatch(Empty[string](), isZero[string]))
+	assert.True(t, AllMatch(Of("hello", "world"), not(isZero[string])))
+	assert.False(t, AllMatch(Of("", "world"), not(isZero[string])))
 }
 
 func TestIterableStream_AnyMatch(t *testing.T) {
 	// for empty iter.Seq, following Java behavior as reference
-	assert.False(t, AnyMatch(slices.Values([]string{}), isZero[string]))
-	assert.True(t, AnyMatch(slices.Values([]string{"hello", "world"}), not(isZero[string])))
-	assert.True(t, AnyMatch(slices.Values([]string{"", "world"}), not(isZero[string])))
-	assert.False(t, AnyMatch(slices.Values([]string{"", ""}), not(isZero[string])))
+	assert.False(t, AnyMatch(Empty[string](), isZero[string]))
+	assert.True(t, AnyMatch(Of("hello", "world"), not(isZero[string])))
+	assert.True(t, AnyMatch(Of("", "world"), not(isZero[string])))
+	assert.False(t, AnyMatch(Of("", ""), not(isZero[string])))
 }
 
 func TestIterableStream_NoneMatch(t *testing.T) {
 	// for empty iter.Seq, following Java behavior as reference
-	assert.True(t, NoneMatch(slices.Values([]string{}), isZero[string]))
-	assert.False(t, NoneMatch(slices.Values([]string{"hello", "world"}), not(isZero[string])))
-	assert.False(t, NoneMatch(slices.Values([]string{"", "world"}), not(isZero[string])))
-	assert.True(t, NoneMatch(slices.Values([]string{"", ""}), not(isZero[string])))
+	assert.True(t, NoneMatch(Empty[string](), isZero[string]))
+	assert.False(t, NoneMatch(Of("hello", "world"), not(isZero[string])))
+	assert.False(t, NoneMatch(Of("", "world"), not(isZero[string])))
+	assert.True(t, NoneMatch(Of("", ""), not(isZero[string])))
 }
 
 func TestCount(t *testing.T) {
-	assert.Equal(t, 0, Count(slices.Values([]int{})))
-	assert.Equal(t, 0, Count(Skip(3, slices.Values([]int{1, 2, 3}))))
-	assert.Equal(t, 3, Count(slices.Values([]int{1, 2, 3})))
-	assert.Equal(t, 3, Count(Skip(3, slices.Values([]int{1, 2, 3, 4, 5, 6}))))
+	assert.Equal(t, 0, Count(Empty[int]()))
+	assert.Equal(t, 0, Count(Skip(3, Of(1, 2, 3))))
+	assert.Equal(t, 3, Count(Of(1, 2, 3)))
+	assert.Equal(t, 3, Count(Skip(3, Of(1, 2, 3, 4, 5, 6))))
 	assert.Equal(t, 8, Count(Limit(8, Iterate[int](1, increment[int]))))
 }
 
 func TestFindFirst(t *testing.T) {
-	_, ok := FindFirst(slices.Values([]int{}))
+	_, ok := FindFirst(Empty[int]())
 	require.False(t, ok)
 
-	_, ok = FindFirst(Skip(3, slices.Values([]int{1, 2, 3})))
+	_, ok = FindFirst(Skip(3, Of(1, 2, 3)))
 	require.False(t, ok)
 
-	n, ok := FindFirst(slices.Values([]int{1, 2, 3}))
+	n, ok := FindFirst(Of(1, 2, 3))
 	require.True(t, ok)
 	assert.Equal(t, 1, n)
 
-	n, ok = FindFirst(Skip(3, slices.Values([]int{1, 2, 3, 4, 5, 6})))
+	n, ok = FindFirst(Skip(3, Of(1, 2, 3, 4, 5, 6)))
 	require.True(t, ok)
 	assert.Equal(t, 4, n)
 
@@ -97,59 +96,59 @@ func TestFindFirst(t *testing.T) {
 }
 
 func TestMax(t *testing.T) {
-	_, ok := Max(slices.Values([]int{}))
+	_, ok := Max(Empty[int]())
 	require.False(t, ok)
 
-	_, ok = Max(Skip(3, slices.Values([]int{1, 2, 3})))
+	_, ok = Max(Skip(3, Of(1, 2, 3)))
 	require.False(t, ok)
 
-	n, ok := Max(Skip(2, slices.Values([]int{1, 2, 3})))
+	n, ok := Max(Skip(2, Of(1, 2, 3)))
 	require.True(t, ok)
 	assert.Equal(t, 3, n)
 
-	n, ok = Max(slices.Values([]int{1, 3, 2}))
+	n, ok = Max(Of(1, 3, 2))
 	require.True(t, ok)
 	assert.Equal(t, 3, n)
 
-	n, ok = Max(Skip(3, slices.Values([]int{1, 2, 3, 4, 5, 6})))
+	n, ok = Max(Skip(3, Of(1, 2, 3, 4, 5, 6)))
 	require.True(t, ok)
 	assert.Equal(t, 6, n)
 }
 
 func TestMin(t *testing.T) {
-	_, ok := Min(slices.Values([]int{}))
+	_, ok := Min(Empty[int]())
 	require.False(t, ok)
 
-	n, ok := Min(slices.Values([]int{1, 2, 3}))
+	n, ok := Min(Of(1, 2, 3))
 	require.True(t, ok)
 	assert.Equal(t, 1, n)
 }
 
 func TestMaxFunc(t *testing.T) {
-	_, ok := MaxFunc(slices.Values([]int{}), cmp.Compare[int])
+	_, ok := MaxFunc(Empty[int](), cmp.Compare[int])
 	require.False(t, ok)
 
-	_, ok = MaxFunc(Skip(3, slices.Values([]int{1, 2, 3})), cmp.Compare[int])
+	_, ok = MaxFunc(Skip(3, Of(1, 2, 3)), cmp.Compare[int])
 	require.False(t, ok)
 
-	n, ok := MaxFunc(Skip(2, slices.Values([]int{1, 2, 3})), cmp.Compare[int])
+	n, ok := MaxFunc(Skip(2, Of(1, 2, 3)), cmp.Compare[int])
 	require.True(t, ok)
 	assert.Equal(t, 3, n)
 
-	n, ok = MaxFunc(slices.Values([]int{1, 3, 2}), cmp.Compare[int])
+	n, ok = MaxFunc(Of(1, 3, 2), cmp.Compare[int])
 	require.True(t, ok)
 	assert.Equal(t, 3, n)
 
-	n, ok = MaxFunc(Skip(3, slices.Values([]int{1, 2, 3, 4, 5, 6})), cmp.Compare[int])
+	n, ok = MaxFunc(Skip(3, Of(1, 2, 3, 4, 5, 6)), cmp.Compare[int])
 	require.True(t, ok)
 	assert.Equal(t, 6, n)
 }
 
 func TestMinFunc(t *testing.T) {
-	_, ok := MinFunc(slices.Values([]int{}), cmp.Compare[int])
+	_, ok := MinFunc(Empty[int](), cmp.Compare[int])
 	require.False(t, ok)
 
-	n, ok := MinFunc(slices.Values([]int{1, 2, 3}), cmp.Compare[int])
+	n, ok := MinFunc(Of(1, 2, 3), cmp.Compare[int])
 	require.True(t, ok)
 	assert.Equal(t, 1, n)
 }

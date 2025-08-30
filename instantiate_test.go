@@ -34,8 +34,8 @@ func TestGenerate(t *testing.T) {
 
 func TestConcat(t *testing.T) {
 	concat := Concat[int](
-		slices.Values([]int{1, 2, 3, 4, 5, 6}),
-		slices.Values([]int{7, 8, 9, 10}),
+		Of(1, 2, 3, 4, 5, 6),
+		Of(7, 8, 9, 10),
 	)
 	assert.Equal(t, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, slices.Collect(concat))
 	// test that iterating for the second time produces the same results
@@ -55,4 +55,65 @@ func TestSeq2KeyValues(t *testing.T) {
 
 	assert.Equal(t, []int{1, 2, 3},
 		slices.Sorted(Values(seq2)))
+}
+
+func TestOfChannel(t *testing.T) {
+	ch := make(chan int, 3)
+	ch <- 1
+	ch <- 2
+	ch <- 3
+	close(ch)
+
+	result := slices.Collect(OfChannel(ch))
+	assert.Equal(t, []int{1, 2, 3}, result)
+}
+
+func TestOfSlice(t *testing.T) {
+	slice := []string{"a", "b", "c"}
+	result := slices.Collect(OfSlice(slice))
+	assert.Equal(t, []string{"a", "b", "c"}, result)
+}
+
+func TestOfMap(t *testing.T) {
+	m := map[string]int{"x": 10, "y": 20, "z": 30}
+	keys := make([]string, 0)
+	values := make([]int, 0)
+
+	for k, v := range OfMap(m) {
+		keys = append(keys, k)
+		values = append(values, v)
+	}
+
+	slices.Sort(keys)
+	slices.Sort(values)
+	assert.Equal(t, []string{"x", "y", "z"}, keys)
+	assert.Equal(t, []int{10, 20, 30}, values)
+}
+
+func TestOfMapKeys(t *testing.T) {
+	m := map[string]int{"foo": 1, "bar": 2, "baz": 3}
+	result := slices.Collect(OfMapKeys(m))
+	slices.Sort(result)
+	assert.Equal(t, []string{"bar", "baz", "foo"}, result)
+}
+
+func TestOfMapValues(t *testing.T) {
+	m := map[string]int{"x": 100, "y": 200, "z": 300}
+	result := slices.Collect(OfMapValues(m))
+	slices.Sort(result)
+	assert.Equal(t, []int{100, 200, 300}, result)
+}
+
+func TestOf(t *testing.T) {
+	result := slices.Collect(Of(1, 2, 3, 4, 5))
+	assert.Equal(t, []int{1, 2, 3, 4, 5}, result)
+}
+
+func TestOfRange(t *testing.T) {
+	result := slices.Collect(OfRange(0, 5))
+	assert.Equal(t, []int{0, 1, 2, 3, 4}, result)
+
+	// Test with different types
+	result2 := slices.Collect(OfRange(10, 13))
+	assert.Equal(t, []int{10, 11, 12}, result2)
 }
