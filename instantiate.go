@@ -59,6 +59,11 @@ func Empty[T any]() iter.Seq[T] {
 	return func(_ func(T) bool) {}
 }
 
+// Empty2 returns an empty iter.Seq2
+func Empty2[T1, T2 any]() iter.Seq2[T1, T2] {
+	return func(_ func(T1, T2) bool) {}
+}
+
 // Keys returns an iter.Seq that iterates the keys (first/left items) of the source iter.Seq2
 func Keys[K, V any](source iter.Seq2[K, V]) iter.Seq[K] {
 	return func(yield func(K) bool) {
