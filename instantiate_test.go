@@ -42,6 +42,18 @@ func TestConcat(t *testing.T) {
 	assert.Equal(t, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, slices.Collect(concat))
 }
 
+func TestConcatMultiple(t *testing.T) {
+	concat := Concat[int](
+		Of(1, 2, 3),
+		Of(4, 5, 6),
+		Empty[int](),
+		Of(7, 8, 9, 10),
+	)
+	assert.Equal(t, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, slices.Collect(concat))
+	// test that iterating for the second time produces the same results
+	assert.Equal(t, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, slices.Collect(concat))
+}
+
 func TestEmpty(t *testing.T) {
 	assert.Empty(t, slices.Collect(Empty[int]()))
 }

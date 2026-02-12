@@ -37,18 +37,16 @@ func Iterate[T any](seed T, f func(T) T) iter.Seq[T] {
 	}
 }
 
-// Concat creates a lazily concatenated iter.Seq whose elements are all the elements of the first iter.Seq
-// followed by all the elements of the second iter.Seq.
-func Concat[T any](a, b iter.Seq[T]) iter.Seq[T] {
+// Concat creates a lazily concatenated iter.Seq whose elements are all the elements of the first
+// provided iter.Seq followed by all the elements of the second provided iter.Seq, followed by the
+// elements of the third iter.Seq (if any), and so on.
+func Concat[T any](seqs ...iter.Seq[T]) iter.Seq[T] {
 	return func(yield func(T) bool) {
-		for i := range a {
-			if !yield(i) {
-				return
-			}
-		}
-		for i := range b {
-			if !yield(i) {
-				return
+		for _, seq := range seqs {
+			for i := range seq {
+				if !yield(i) {
+					return
+				}
 			}
 		}
 	}
