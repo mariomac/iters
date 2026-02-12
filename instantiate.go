@@ -57,11 +57,6 @@ func Empty[T any]() iter.Seq[T] {
 	return func(_ func(T) bool) {}
 }
 
-// Empty2 returns an empty iter.Seq2
-func Empty2[T1, T2 any]() iter.Seq2[T1, T2] {
-	return func(_ func(T1, T2) bool) {}
-}
-
 // Keys returns an iter.Seq that iterates the keys (first/left items) of the source iter.Seq2
 func Keys[K, V any](source iter.Seq2[K, V]) iter.Seq[K] {
 	return func(yield func(K) bool) {
@@ -121,12 +116,6 @@ func OfSlice[T any](sl []T) iter.Seq[T] {
 	return slices.Values(sl)
 }
 
-// OfMap returns an iter.Seq2 that iterates over all key-value pairs of the provided map.
-// It is just an alias for maps.All.
-func OfMap[K comparable, V any](m map[K]V) iter.Seq2[K, V] {
-	return maps.All(m)
-}
-
 // OfMapKeys returns an iter.Seq that iterates over all keys of the provided map.
 // It is just an alias for maps.Keys.
 func OfMapKeys[T comparable, K any](m map[T]K) iter.Seq[T] {
@@ -137,28 +126,4 @@ func OfMapKeys[T comparable, K any](m map[T]K) iter.Seq[T] {
 // It is just an alias for maps.Values.
 func OfMapValues[T comparable, V any](m map[T]V) iter.Seq[V] {
 	return maps.Values(m)
-}
-
-// Zip joins the input iter.Seq[K] and iter.Seq[V] into an iter.Seq2[K, V].
-// The resulting iter.Seq2 will have the same length as the shorter of the two input iter.Seq.
-func Zip[K, V any](keys iter.Seq[K], vals iter.Seq[V]) iter.Seq2[K, V] {
-	return func(yield func(K, V) bool) {
-		keyNext, keyStop := iter.Pull(keys)
-		defer keyStop()
-		valNext, valStop := iter.Pull(vals)
-		defer valStop()
-
-		for {
-			k, kOk := keyNext()
-			v, vOk := valNext()
-
-			if !kOk || !vOk {
-				return
-			}
-
-			if !yield(k, v) {
-				return
-			}
-		}
-	}
 }
