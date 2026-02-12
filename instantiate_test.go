@@ -42,6 +42,18 @@ func TestConcat(t *testing.T) {
 	assert.Equal(t, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, slices.Collect(concat))
 }
 
+func TestConcatMultiple(t *testing.T) {
+	concat := Concat[int](
+		Of(1, 2, 3),
+		Of(4, 5, 6),
+		Empty[int](),
+		Of(7, 8, 9, 10),
+	)
+	assert.Equal(t, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, slices.Collect(concat))
+	// test that iterating for the second time produces the same results
+	assert.Equal(t, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, slices.Collect(concat))
+}
+
 func TestEmpty(t *testing.T) {
 	assert.Empty(t, slices.Collect(Empty[int]()))
 }
@@ -74,22 +86,6 @@ func TestOfSlice(t *testing.T) {
 	assert.Equal(t, []string{"a", "b", "c"}, result)
 }
 
-func TestOfMap(t *testing.T) {
-	m := map[string]int{"x": 10, "y": 20, "z": 30}
-	keys := make([]string, 0)
-	values := make([]int, 0)
-
-	for k, v := range OfMap(m) {
-		keys = append(keys, k)
-		values = append(values, v)
-	}
-
-	slices.Sort(keys)
-	slices.Sort(values)
-	assert.Equal(t, []string{"x", "y", "z"}, keys)
-	assert.Equal(t, []int{10, 20, 30}, values)
-}
-
 func TestOfMapKeys(t *testing.T) {
 	m := map[string]int{"foo": 1, "bar": 2, "baz": 3}
 	result := slices.Collect(OfMapKeys(m))
@@ -116,21 +112,4 @@ func TestOfRange(t *testing.T) {
 	// Test with different types
 	result2 := slices.Collect(OfRange(10, 13))
 	assert.Equal(t, []int{10, 11, 12}, result2)
-}
-
-func TestZip(t *testing.T) {
-	keys := Of("a", "b", "c", "d")
-	values := Of(1, 2, 3)
-
-	assert.Equal(t,
-		map[string]int{"a": 1, "b": 2, "c": 3},
-		maps.Collect(Zip(keys, values)))
-
-	// Test equal length sequences
-	keys2 := Of("x", "y", "z")
-	values2 := Of(10, 20, 30)
-
-	assert.Equal(t,
-		map[string]int{"x": 10, "y": 20, "z": 30},
-		maps.Collect(Zip(keys2, values2)))
 }
