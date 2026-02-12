@@ -36,3 +36,14 @@ func Skip2[K, V any](n int, input iter.Seq2[K, V]) iter.Seq2[K, V] {
 		}
 	}
 }
+
+// Map2Seq transforms an input iter.Seq2 into an iter.Seq by applying a mapper function to each element
+func Map2Seq[K, V, O any](input iter.Seq2[K, V], mapper func(K, V) O) iter.Seq[O] {
+	return func(yield func(O) bool) {
+		for k, v := range input {
+			if !yield(mapper(k, v)) {
+				return
+			}
+		}
+	}
+}
